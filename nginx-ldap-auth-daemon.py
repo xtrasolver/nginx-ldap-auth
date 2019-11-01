@@ -147,6 +147,7 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         sys.stdout.write("%s - %s [%s] %s\n" % (addr, user,
                          self.log_date_time_string(), format % args))
+        sys.stdout.flush()
 
     def log_error(self, format, *args):
         self.log_message(format, *args)
@@ -265,7 +266,14 @@ class LDAPAuthHandler(AuthHandler):
             self.log_message('Auth OK for user "%s"' % (ctx['user']))
 
             # Successfully authenticated user
+
             self.send_response(200)
+
+            # TODO: Add Headers
+ 
+            self.send_header('X-Remote-User', ctx['user'])
+            self.send_header('X-Remote-Group', 'GRP_K8S_K2_ADMINS')
+
             self.end_headers()
 
         except:
